@@ -18,11 +18,11 @@ main () {
 
   case "${opt}" in
     -* )
-      exec ssb-sub "${opt}"
+      exec ssb-subscribe "${opt}"
     ;;
   esac
 
-  exec ssb-sub --unsubscribe "${@}"
+  exec ssb-subscribe --unsubscribe "${@}"
 }
 
 main "${@}"
