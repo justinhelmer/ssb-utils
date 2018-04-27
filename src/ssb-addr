@@ -1,0 +1,129 @@
+#!/usr/bin/python3
+# -*- mode: python; coding: utf-8 -*-
+"""
+Usage: ssb-addr [OPTIONS] [FILE [FILE …]]
+
+positional arguments:
+  FILE                  file to calculate digest for
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -v, --version         show version information and exit
+  -c, --copyright       show copying policy and exit
+
+With no FILE, or when FILE is -, read standard input.
+"""
+##############################################################################
+# This program is free software; you can redistribute it and/or modify it    #
+# under the terms of the GNU General Public License as published by the Free #
+# Software Foundation; either version 3 of the License, or (at your option)  #
+# any later version.                                                         #
+#                                                                            #
+# This program is distributed in the hope that it will be useful, but with-  #
+# out any warranty; without even the implied warranty of merchantability or  #
+# fitness for a particular purpose. See the GNU General Public License for   #
+# more details.  <http://gplv3.fsf.org/>                                     #
+##############################################################################
+
+import sys
+import os
+import pathlib
+import argparse
+import hashlib
+import binascii
+import pprint
+
+try:
+    from locale import (Error, setlocale, LC_ALL)
+    _ = setlocale(LC_ALL, '')
+except (ImportError, NameError, Error):
+    pass
+
+__author__ = 'Klaus Alexander Seistrup <klaus@seistrup.dk>'
+__revision__ = '2018-04-27'
+__version__ = '0.0.2 ({})'.format(__revision__)
+__copyright__ = """\
+ssb-addr {}
+Copyright © 2017-18 Klaus Alexander Seistrup <klaus@seistrup.dk>
+
+This is free software; see the source for copying conditions. There is no
+warranty; not even for merchantability or fitness for a particular purpose.\
+""".format(__version__)
+
+DEBUG = os.environ.get('DEBUG', 'False')[0].upper() in '1JTY'  # 1/Ja/True/Yes
+
+EPILOG = """With no FILE, or when FILE is -, read standard input."""
+
+
+def die(message=None):
+    """Exit gracefully"""
+    if message:
+        print(message, file=sys.stderr)
+    sys.exit(1 if message else 0)
+
+
+def debug(head, data):
+    """Possibly pretty print an object to stderr"""
+    if DEBUG:
+        pprint.pprint({head: data}, stream=sys.stderr)
+
+
+def ssb_addr(files):
+    """Calculate and show SSB hashes for all files"""
+    cache = {}
+    formatter = '&{digest}.sha256  {name}'
+
+    for fname in files:
+        fpath = pathlib.Path('/dev/stdin' if fname == '-' else fname)
+        ppath = fpath.resolve().as_posix()
+        if ppath in cache:
+            base64 = cache[ppath]
+        else:
+            try:
+                with open(fpath, 'rb') as fptr:
+                    fbuf = fptr.read()
+            except (PermissionError, FileNotFoundError) as error:
+                die(error)
+            except (IOError, OSError) as error:
+                die(error)
+            digest = hashlib.sha256(fbuf).digest()
+            base64 = binascii.b2a_base64(digest).decode('us-ascii').rstrip()
+            cache[ppath] = base64
+        print(formatter.format(name=fname, digest=base64))
+
+    return 0
+
+
+def main(progname='ssb_addr'):
+    """Main entry point"""
+
+    debug('argv', sys.argv)
+
+    parser = argparse.ArgumentParser(
+        prog=progname,
+        formatter_class=argparse.RawTextHelpFormatter,
+        epilog=EPILOG
+    )
+    # Generic options
+    parser.add_argument('-v', '--version', action='version',
+                        version='%(prog)s/{}'.format(__version__),
+                        help='show version information and exit')
+    parser.add_argument('-c', '--copyright', action='version',
+                        version=__copyright__,
+                        help='show copying policy and exit')
+    # The rest
+    parser.add_argument('FILE', nargs='*', default=['-'],
+                        help='file to calculate digest for')
+
+    args = parser.parse_args()
+    debug('args', args)
+
+    fail = ssb_addr(args.FILE)
+
+    return fail
+
+
+if __name__ == '__main__':
+    sys.exit(main(pathlib.Path(sys.argv[0]).name))
+
+# eof
