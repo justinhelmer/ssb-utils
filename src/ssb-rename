@@ -36,7 +36,7 @@ except (ImportError, NameError, Error):
 __author__ = 'Klaus Alexander Seistrup <klaus@seistrup.dk>'
 __whoami__ = 'ssb-rename'
 __revision__ = '2018-04-27'
-__version__ = '0.0.1 ({})'.format(__revision__)
+__version__ = '0.0.2 ({})'.format(__revision__)
 __copyright__ = """\
 ssb-rename {}
 Copyright © 2018 Klaus Alexander Seistrup <klaus@seistrup.dk>
@@ -100,7 +100,6 @@ def ssb_rename(contact, name, comment=None):
         'about': contact,
         'name': name,
         'type': 'about',
-        'user-agent': 'ssb-rename/{}'.format(__version__)
     }
     if comment and isinstance(comment, list):
         data['comment'] = ' '.join(comment)
