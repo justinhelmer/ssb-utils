@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- mode: python; coding: utf-8 -*-
 """
-Usage: secexp [OPTIONS]
+Usage: ssb-export [OPTIONS]
 
 optional arguments:
   -h, --help          show this help message and exit
@@ -42,16 +42,16 @@ from pprint import pprint
 try:
     from locale import (Error, setlocale, LC_ALL)
     _ = setlocale(LC_ALL, '')
-except (ImportError, ModuleNotFoundError, NameError, Error):
+except (ImportError, NameError, Error):
     pass
 
 __author__ = 'Klaus Alexander Seistrup <klaus@seistrup.dk>'
-__whoami__ = 'secexp'
-__revision__ = '2017-04-27'
+__whoami__ = 'ssb-export'
+__revision__ = '2018-04-27'
 __version__ = '0.1.1 ({})'.format(__revision__)
 __copyright__ = """\
-secexp {}
-Copyright © 2017 Klaus Alexander Seistrup <klaus@seistrup.dk>
+ssb-export {}
+Copyright © 2017-18 Klaus Alexander Seistrup <klaus@seistrup.dk>
 
 This is free software; see the source for copying conditions. There is no
 warranty; not even for merchantability or fitness for a particular purpose.\
