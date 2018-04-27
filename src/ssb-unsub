@@ -17,7 +17,7 @@ main () {
   local opt="${1}"
 
   case "${opt}" in
-    -h | --help | -v | --version | -c | --copyright )
+    -* )
       exec ssb-sub "${opt}"
     ;;
   esac
