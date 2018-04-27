@@ -123,7 +123,7 @@ def deuglify(error):
 
         return strerr
 
-    # Let's not pretend that we know the nature on the exception
+    # Let's not pretend that we know the nature of the exception
     return error
 
 
