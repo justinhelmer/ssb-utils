@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- mode: python; coding: utf-8 -*-
 """
-Usage: ssb-sub [OPTIONS] CHANNEL [COMMENT [COMMENT …]]
+Usage: ssb-subcribe [OPTIONS] CHANNEL [COMMENT [COMMENT …]]
   options are:
     -h, --help .......... show this help text and exit
     -v, --version ....... print version information and exit
@@ -36,11 +36,11 @@ except (ImportError, NameError, Error):
     pass
 
 __author__ = 'Klaus Alexander Seistrup <klaus@seistrup.dk>'
-__whoami__ = 'ssb-sub'
+__whoami__ = 'ssb-subcribe'
 __revision__ = '2018-04-12'
 __version__ = '0.0.2 ({})'.format(__revision__)
 __copyright__ = """\
-ssb-sub {}
+ssb-subcribe {}
 Copyright © 2018 Klaus Alexander Seistrup <klaus@seistrup.dk>
 
 This is free software; see the source for copying conditions. There is no
@@ -96,13 +96,13 @@ def die(error=None):
     sys.exit(1 if error else 0)
 
 
-def ssb_sub(channel, comment=None, subscribed=True):
+def ssb_subscribe(channel, comment=None, subscribed=True):
     """Subscribe to an SSB channel"""
     data = {
         'channel': channel,
         'subscribed': subscribed,
         'type': 'channel',
-        'user-agent': 'ssb-sub/{}'.format(__version__)
+        'user-agent': 'ssb-subcribe/{}'.format(__version__)
     }
     if comment and isinstance(comment, list):
         data['comment'] = ' '.join(comment)
@@ -139,7 +139,7 @@ def main(progname=__whoami__):
     args = parser.parse_args()
     debug('args', args)
 
-    ssb_sub(args.CHANNEL, args.COMMENT or None, not args.unsubscribe)
+    ssb_subscribe(args.CHANNEL, args.COMMENT or None, not args.unsubscribe)
 
     return 0
 
