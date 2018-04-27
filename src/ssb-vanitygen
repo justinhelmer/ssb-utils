@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- mode: python; coding: utf-8 -*-
 """
-Usage: ssbvan [OPTIONS] [REGEX]
+Usage: ssb vanitygen [OPTIONS] [REGEX]
 
 positional arguments:
   REGEX                 match this regex
@@ -14,7 +14,7 @@ optional arguments:
   -n MAXITER, --maxiter MAXITER
                         exit after MAXITER iterations
 
-If no REGEX is given, ssbvan will generate a random secret.
+If no REGEX is given, ssb-vanitygen will generate a random secret.
 """
 ##############################################################################
 # This program is free software; you can redistribute it and/or modify it    #
@@ -40,25 +40,25 @@ from pprint import pprint
 try:
     from locale import (Error, setlocale, LC_ALL)
     _ = setlocale(LC_ALL, '')
-except (ImportError, ModuleNotFoundError, NameError, Error):
+except (ImportError, NameError, Error):
     pass
 
 # 3rd party modules
 try:
     import nacl.signing
     import nacl.encoding
-except (ImportError, ModuleNotFoundError) as imperr:
+except ImportError as imperr:
     print(imperr, file=sys.stderr)
     print("Try 'pip install pynacl'", file=sys.stderr)
     sys.exit(1)
 
 __author__ = 'Klaus Alexander Seistrup <klaus@seistrup.dk>'
-__whoami__ = 'ssbvan'
-__revision__ = '2017-05-25'
+__whoami__ = 'ssb-vanitygen'
+__revision__ = '2018-04-27'
 __version__ = '0.2.1 ({})'.format(__revision__)
 __copyright__ = """\
-ssbvan {}
-Copyright © 2017 Klaus Alexander Seistrup <klaus@seistrup.dk>
+ssb-vanitygen {}
+Copyright © 2017-18 Klaus Alexander Seistrup <klaus@seistrup.dk>
 
 This is free software; see the source for copying conditions. There is no
 warranty; not even for merchantability or fitness for a particular purpose.\
@@ -143,7 +143,7 @@ def base64(bytesbuf):
     return binascii.b2a_base64(bytesbuf).decode('us-ascii').strip()
 
 
-def vanitygen(regex, maxiter):
+def ssb_vanitygen(regex, maxiter):
     """Find an Ed25519 pubkey that matches REGEX"""
     while maxiter:
         sec = nacl.signing.SigningKey.generate()
@@ -194,7 +194,7 @@ def main(progname=__whoami__):
 
     try:
         regex = re.compile(args.REGEX or '.', flags=flags)
-        secret = vanitygen(regex, maxiter)
+        secret = ssb_vanitygen(regex, maxiter)
         if secret is None:
             error = "Didn't find a matching pubkey in {} iterations.".format(
                 args.maxiter
