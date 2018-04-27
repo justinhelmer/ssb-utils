@@ -38,7 +38,7 @@ except (ImportError, NameError, Error):
 __author__ = 'Klaus Alexander Seistrup <klaus@seistrup.dk>'
 __whoami__ = 'ssb-follow'
 __revision__ = '2018-04-27'
-__version__ = '0.0.2 ({})'.format(__revision__)
+__version__ = '0.0.3 ({})'.format(__revision__)
 __copyright__ = """\
 ssb-follow {}
 Copyright © 2018 Klaus Alexander Seistrup <klaus@seistrup.dk>
@@ -142,7 +142,7 @@ def main(progname=__whoami__):
     args = parser.parse_args()
     debug('args', args)
 
-    ssb_follow(args.CONTACT, args.COMMENT, not args.unfollow)
+    ssb_follow(args.CONTACT, args.COMMENT or None, not args.unfollow)
 
     return 0
 
