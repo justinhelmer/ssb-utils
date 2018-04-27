@@ -16,7 +16,7 @@ ME="${0##*/}"
 MY_APPNAME='ssb'
 MY_AUTHOR='Klaus Alexander Seistrup <klaus@seistrup.dk>'
 MY_REVISION='2018-04-27'
-MY_VERSION="0.0.1α (${MY_REVISION})"
+MY_VERSION="0.0.2 (${MY_REVISION})"
 MY_COPYRIGHT="\
 ssb/${MY_VERSION}
 Copyright © 2018 ${MY_AUTHOR}
@@ -28,9 +28,11 @@ MY_HELP="
 usage: ${ME} [OPTIONS] [COMMAND [ARGUMENTS …]]
 
 options are:
-  -h, --help ........ display this help and exit
-  -v, --version ..... output version information and exit
-  -c, --copyright ... show copying policy and exit
+  -h, --help ............ display this help and exit
+  -v, --version ......... output version information and exit
+  -c, --copyright ....... show copying policy and exit
+or:
+  -l, --list-commands ... list known commands
 "
 
 die () {
@@ -53,6 +55,24 @@ my_copyright () {
   echo "${MY_COPYRIGHT}"
 }
 
+my_list_commands () {
+  local self="${1}"
+
+  echo 'Known commands are:'
+
+  ls -1 "${self}"-* \
+  | while read mycmd
+    do
+      case "${mycmd}" in
+        *~ )
+	  continue
+	;;
+      esac
+      test -h "${mycmd}" && continue
+      printf '  %s\n' "${mycmd##*/ssb-}"
+    done
+}
+
 main () {
   local ssb="${0}"
   local cmd="${1}"
@@ -67,6 +87,9 @@ main () {
     ;;
     -c | --copyright )
       my_copyright
+    ;;
+    -l | --list | --list-commands )
+      my_list_commands "${ssb}"
     ;;
     -* )
       die "unrecognized option: ${cmd}"
