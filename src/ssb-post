@@ -48,6 +48,7 @@ warranty; not even for merchantability or fitness for a particular purpose.\
 """.format(__version__)
 
 DEBUG = os.environ.get('DEBUG', 'False')[0].upper() in '1JTY'  # 1/Ja/True/Yes
+STDERR = sys.stderr
 EPILOG = None
 
 
