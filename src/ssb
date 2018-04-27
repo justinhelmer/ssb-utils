@@ -1,0 +1,87 @@
+#!/bin/sh
+# -*- mode: sh; coding: utf-8 -*-
+ME="${0##*/}"
+##############################################################################
+# This program is free software; you can redistribute it and/or modify it    #
+# under the terms of the GNU General Public License as published by the Free #
+# Software Foundation; either version 3 of the License, or (at your option)  #
+# any later version.                                                         #
+#                                                                            #
+# This program is distributed in the hope that it will be useful, but with-  #
+# out any warranty; without even the implied warranty of merchantability or  #
+# fitness for a particular purpose. See the GNU General Public License for   #
+# more details.  <http://gplv3.fsf.org/>                                     #
+##############################################################################
+
+MY_APPNAME='ssb'
+MY_AUTHOR='Klaus Alexander Seistrup <klaus@seistrup.dk>'
+MY_REVISION='2018-04-27'
+MY_VERSION="0.0.1α (${MY_REVISION})"
+MY_COPYRIGHT="\
+ssb/${MY_VERSION}
+Copyright © 2018 ${MY_AUTHOR}
+
+This is free software; see the source for copying conditions. There is no
+warranty; not even for merchantability or fitness for a particular purpose.\
+"
+MY_HELP="
+usage: ${ME} [OPTIONS] [COMMAND [ARGUMENTS …]]
+
+options are:
+  -h, --help ........ display this help and exit
+  -v, --version ..... output version information and exit
+  -c, --copyright ... show copying policy and exit
+"
+
+die () {
+  test -n "${1}" && {
+    echo "${ME}:" "${@}" >&2
+    exit 1
+  }
+  exit 0
+}
+
+my_help () {
+  echo "${MY_HELP}"
+}
+
+my_version () {
+  echo "${MY_APPNAME}/${MY_VERSION}"
+}
+
+my_copyright () {
+  echo "${MY_COPYRIGHT}"
+}
+
+main () {
+  local ssb="${0}"
+  local cmd="${1}"
+  local ext="${ssb}-${cmd}"
+
+  case "${cmd}" in
+    -h | --help )
+      my_help
+    ;;
+    -v | --version )
+      my_version
+    ;;
+    -c | --copyright )
+      my_copyright
+    ;;
+    -* )
+      die "unrecognized option: ${cmd}"
+    ;;
+    * )
+      test -x "${ext}" && {
+        shift
+	exec "${ext}" "${@}"
+      }
+      die "no such command: ${cmd}"
+    ;;
+  esac
+  exit 0
+}
+
+main "${@}"
+
+# eof
