@@ -1,0 +1,158 @@
+#!/usr/bin/env python3
+# -*- mode: python; coding: utf-8 -*-
+"""
+Usage: ssb-post [OPTIONS]
+  options are:
+    -h, --help ........ show this help text and exit
+    -v, --version ..... print version information and exit
+    -c, --copyright ... show copying policy and exit
+"""
+##############################################################################
+# This program is free software; you can redistribute it and/or modify it    #
+# under the terms of the GNU General Public License as published by the Free #
+# Software Foundation; either version 3 of the License, or (at your option)  #
+# any later version.                                                         #
+#                                                                            #
+# This program is distributed in the hope that it will be useful, but with-  #
+# out any warranty; without even the implied warranty of merchantability or  #
+# fitness for a particular purpose. See the GNU General Public License for   #
+# more details.  <http://gplv3.fsf.org/>                                     #
+##############################################################################
+
+import sys
+import os
+import pathlib
+import argparse
+import subprocess
+import json
+
+from pprint import pprint
+from subprocess import PIPE
+
+try:
+    from locale import (Error, setlocale, LC_ALL)
+    _ = setlocale(LC_ALL, '')
+except (ImportError, ModuleNotFoundError, NameError, Error):
+    pass
+
+__author__ = 'Klaus Alexander Seistrup <klaus@seistrup.dk>'
+__whoami__ = 'ssb-post'
+__revision__ = '2018-04-27'
+__version__ = '0.0.2 ({})'.format(__revision__)
+__copyright__ = """\
+ssb-post {}
+Copyright © 2017-18 Klaus Alexander Seistrup <klaus@seistrup.dk>
+
+This is free software; see the source for copying conditions. There is no
+warranty; not even for merchantability or fitness for a particular purpose.\
+""".format(__version__)
+
+DEBUG = os.environ.get('DEBUG', 'False')[0].upper() in '1JTY'  # 1/Ja/True/Yes
+EPILOG = None
+
+
+def debug(head, data=None):
+    """Possibly pretty print an object to stderr"""
+    if DEBUG:
+        pprint(head if data is None else {head: data}, stream=STDERR)
+
+
+def deuglify(error):
+    """Deuglify the EnvironmentError class of errors"""
+    debug('ugly', error)
+
+    if not isinstance(error, Exception):
+        return error
+
+    nargs = len(error.args)
+
+    if nargs == 1:
+        return str(error)
+
+    strerr = getattr(error, 'strerror', None)
+
+    if nargs == 2 and strerr is not None:
+        fname1 = getattr(error, 'filename', None)
+        fname2 = getattr(error, 'filename2', None)
+
+        if fname1 and fname2:
+            return '{}: {} → {}'.format(strerr, fname1, fname2)
+        if fname1 or fname2:
+            return '{}: {}'.format(strerr, fname1 or fname2)
+
+        return strerr
+
+    # Let's not pretend that we know the nature on the exception
+    return error
+
+
+def die(error=None):
+    """Exit gracefully"""
+    debug('exit', error)
+
+    if error:
+        print(deuglify(error), file=STDERR)
+
+    sys.exit(1 if error else 0)
+
+
+def jdumps(item):
+    """Dump an object to JSON"""
+    return json.dumps(item, ensure_ascii=False, sort_keys=True)
+
+
+def main(progname=__whoami__):
+    """Main entry point"""
+
+    debug('argv', sys.argv)
+
+    parser = argparse.ArgumentParser(
+        prog=progname,
+        formatter_class=argparse.RawTextHelpFormatter,
+        epilog=EPILOG
+    )
+    parser.add_argument('-v', '--version', action='version',
+                        version='%(prog)s/{}'.format(__version__),
+                        help='show version information and exit')
+    parser.add_argument('--copyright', action='version',
+                        version=__copyright__,
+                        help='show copying policy and exit')
+    parser.add_argument('-c', '--channel', help='post to #CHANNEL')
+    parser.add_argument('-l', '--lang', help='ISO 639-1 language')
+    parser.add_argument('TEXT', nargs='*', help='text to post')
+
+    args = parser.parse_args()
+    debug('args', args)
+
+    vargs = ['sbotc', 'publish']
+    xdata = {
+        'type': 'post',
+        'user-agent': 'ssb-post/{}'.format(__version__)
+    }
+
+    if args.channel:
+        xdata['channel'] = args.channel
+
+    if args.lang:
+        xdata['lang'] = args.lang
+
+    if args.TEXT:
+        text = (' '.join(args.TEXT)).rstrip()
+    else:
+        text = sys.stdin.read().rstrip()
+
+    if not text:
+        die('nothing to post')
+
+    xdata['text'] = text + '\n'
+    vargs.append(jdumps(xdata))
+
+    os.execvp('sbotc', vargs)
+
+    return 1  # We shouldn't be here…
+
+
+if __name__ == '__main__':
+    sys.exit(main(pathlib.Path(sys.argv[0]).name))
+
+# eof
