@@ -119,12 +119,14 @@ def main(progname=__whoami__):
         formatter_class=argparse.RawTextHelpFormatter,
         epilog=EPILOG
     )
+    # Generic options
     parser.add_argument('-v', '--version', action='version',
                         version='%(prog)s/{}'.format(__version__),
                         help='show version information and exit')
     parser.add_argument('--copyright', action='version',
                         version=__copyright__,
                         help='show copying policy and exit')
+    # Specific options
     parser.add_argument('-c', '--channel', help='post to #CHANNEL')
     parser.add_argument('-l', '--lang', help='ISO 639-1 language')
     parser.add_argument('TEXT', nargs='*', help='text to post')
