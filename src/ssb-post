@@ -37,7 +37,7 @@ except (ImportError, ModuleNotFoundError, NameError, Error):
 
 __author__ = 'Klaus Alexander Seistrup <klaus@seistrup.dk>'
 __whoami__ = 'ssb-post'
-__revision__ = '2018-04-27'
+__revision__ = '2018-04-28'
 __version__ = '0.0.2 ({})'.format(__revision__)
 __copyright__ = """\
 ssb-post {}
