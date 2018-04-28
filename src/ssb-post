@@ -13,6 +13,8 @@ optional arguments:
   -c CHANNEL, --channel CHANNEL
                         post to #CHANNEL
   -l LANG, --lang LANG  ISO 639-1 language
+
+When no TEXT is provided, standard input is read.
 """
 ##############################################################################
 # This program is free software; you can redistribute it and/or modify it    #
@@ -45,16 +47,16 @@ __whoami__ = 'ssb-post'
 __revision__ = '2018-04-28'
 __version__ = '0.0.2 ({})'.format(__revision__)
 __copyright__ = """\
-ssb-post {}
+{} {}
 Copyright © 2017-18 Klaus Alexander Seistrup <klaus@seistrup.dk>
 
 This is free software; see the source for copying conditions. There is no
 warranty; not even for merchantability or fitness for a particular purpose.\
-""".format(__version__)
+""".format(__whoami__, __version__)
 
 DEBUG = os.environ.get('DEBUG', 'False')[0].upper() in '1JTY'  # 1/Ja/True/Yes
 STDERR = sys.stderr
-EPILOG = None
+EPILOG = 'When no TEXT is provided, standard input is read.'
 
 
 def debug(head, data=None):
