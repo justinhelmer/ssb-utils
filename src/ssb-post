@@ -39,7 +39,7 @@ from pprint import pprint
 try:
     from locale import (Error, setlocale, LC_ALL)
     _ = setlocale(LC_ALL, '')
-except (ImportError, ModuleNotFoundError, NameError, Error):
+except (ImportError, NameError, Error):
     pass
 
 __author__ = 'Klaus Alexander Seistrup <klaus@seistrup.dk>'
