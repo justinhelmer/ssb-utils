@@ -133,7 +133,7 @@ def main(progname=__whoami__):
     vargs = ['sbotc', 'publish']
     xdata = {
         'type': 'post',
-        'user-agent': 'ssb-post/{}'.format(__version__)
+        'user-agent': '{}/{}'.format(__whoami__, __version__)
     }
 
     if args.channel:
