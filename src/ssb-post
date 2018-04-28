@@ -56,7 +56,7 @@ warranty; not even for merchantability or fitness for a particular purpose.\
 
 DEBUG = os.environ.get('DEBUG', 'False')[0].upper() in '1JTY'  # 1/Ja/True/Yes
 STDERR = sys.stderr
-EPILOG = 'When no TEXT is provided, standard input is read.'
+EPILOG = 'When no TEXT is provided, post is read from standard input.'
 
 
 def debug(head, data=None):
