@@ -1,11 +1,18 @@
 #!/usr/bin/env python3
 # -*- mode: python; coding: utf-8 -*-
 """
-Usage: ssb-post [OPTIONS]
-  options are:
-    -h, --help ........ show this help text and exit
-    -v, --version ..... print version information and exit
-    -c, --copyright ... show copying policy and exit
+Usage: ssb-post [OPTIONS] [TEXT …]
+
+positional arguments:
+  TEXT                  text to post
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -v, --version         show version information and exit
+  --copyright           show copying policy and exit
+  -c CHANNEL, --channel CHANNEL
+                        post to #CHANNEL
+  -l LANG, --lang LANG  ISO 639-1 language
 """
 ##############################################################################
 # This program is free software; you can redistribute it and/or modify it    #
