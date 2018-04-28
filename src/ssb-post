@@ -30,11 +30,9 @@ import sys
 import os
 import pathlib
 import argparse
-import subprocess
 import json
 
 from pprint import pprint
-from subprocess import PIPE
 
 try:
     from locale import (Error, setlocale, LC_ALL)
