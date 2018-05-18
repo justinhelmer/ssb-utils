@@ -13,6 +13,7 @@ optional arguments:
   -c CHANNEL, --channel CHANNEL
                         post to #CHANNEL
   -l LANG, --lang LANG  ISO 639-1 language
+  -s, --scat            post is a scat message
 
 When no TEXT is provided, standard input is read.
 """
@@ -44,8 +45,8 @@ except (ImportError, NameError, Error):
 
 __author__ = 'Klaus Alexander Seistrup <klaus@seistrup.dk>'
 __whoami__ = 'ssb-post'
-__revision__ = '2018-04-28'
-__version__ = '0.0.2 ({})'.format(__revision__)
+__revision__ = '2018-05-18'
+__version__ = '0.1.2 ({})'.format(__revision__)
 __copyright__ = """\
 {} {}
 Copyright © 2017-18 Klaus Alexander Seistrup <klaus@seistrup.dk>
@@ -129,6 +130,8 @@ def main(progname=__whoami__):
     # Specific options
     parser.add_argument('-c', '--channel', help='post to #CHANNEL')
     parser.add_argument('-l', '--lang', help='ISO 639-1 language')
+    parser.add_argument('-s', '--scat', action='store_true',
+                        help='post is a scat message')
     parser.add_argument('TEXT', nargs='*', help='text to post')
 
     args = parser.parse_args()
@@ -136,7 +139,7 @@ def main(progname=__whoami__):
 
     vargs = ['sbotc', 'publish']
     xdata = {
-        'type': 'post',
+        'type': 'scat_message' if args.scat else 'post',
         'user-agent': '{}/{}'.format(__whoami__, __version__)
     }
 
