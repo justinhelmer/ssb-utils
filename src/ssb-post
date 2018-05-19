@@ -45,8 +45,8 @@ except (ImportError, NameError, Error):
 
 __author__ = 'Klaus Alexander Seistrup <klaus@seistrup.dk>'
 __whoami__ = 'ssb-post'
-__revision__ = '2018-05-18'
-__version__ = '0.1.2 ({})'.format(__revision__)
+__revision__ = '2018-05-19'
+__version__ = '0.1.1 ({})'.format(__revision__)
 __copyright__ = """\
 {} {}
 Copyright © 2017-18 Klaus Alexander Seistrup <klaus@seistrup.dk>
@@ -153,11 +153,13 @@ def main(progname=__whoami__):
         text = (' '.join(args.TEXT)).rstrip()
     else:
         text = sys.stdin.read().rstrip()
+        if args.scat:
+            text = ' '.join(text.split())
 
     if not text:
         die('nothing to post')
 
-    xdata['text'] = text + '\n'
+    xdata['text'] = text if args.scat else text + '\n'
     vargs.append(jdumps(xdata))
 
     os.execvp('sbotc', vargs)
