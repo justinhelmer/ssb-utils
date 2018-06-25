@@ -1,0 +1,96 @@
+#!/bin/sh
+# -*- mode: sh; coding: utf-8 -*-
+ME="${0##*/}"
+##############################################################################
+# This program is free software; you can redistribute it and/or modify it    #
+# under the terms of the GNU General Public License as published by the Free #
+# Software Foundation; either version 3 of the License, or (at your option)  #
+# any later version.                                                         #
+#                                                                            #
+# This program is distributed in the hope that it will be useful, but with-  #
+# out any warranty; without even the implied warranty of merchantability or  #
+# fitness for a particular purpose. See the GNU General Public License for   #
+# more details. <http://gplv3.fsf.org/>                                      #
+##############################################################################
+
+MY_APPNAME='ssb-whoami'
+MY_AUTHOR='Klaus Alexander Seistrup <klaus@seistrup.dk>'
+MY_REVISION='2018-06-25'
+MY_VERSION="0.1.0 (${MY_REVISION})"
+MY_COPYRIGHT="\
+ssb-whoami/${MY_VERSION}
+Copyright © 2018 ${MY_AUTHOR}
+
+This is free software; see the source for copying conditions. There is no
+warranty; not even for merchantability or fitness for a particular purpose.\
+"
+MY_HELP="
+usage: ${ME} [OPTIONS]
+
+options are:
+  -h, --help ........ display this help and exit
+  -v, --version ..... output version information and exit
+  -c, --copyright ... show copying policy and exit
+"
+
+die () {
+  [[ -n "${1}" ]] && {
+    echo "${ME}:" "${@}" >&2
+    exit 1
+  }
+  exit 0
+}
+
+my_help () {
+  echo "${MY_HELP}"
+}
+
+my_version () {
+  echo "${MY_APPNAME}/${MY_VERSION}"
+}
+
+my_copyright () {
+  echo "${MY_COPYRIGHT}"
+}
+
+main () {
+  local myid
+  local mysbotc='sbotc'
+
+  case "${1}" in
+    '' )
+      : pass
+    ;;
+    -h | --help )
+      my_help
+    ;;
+    -v | --version )
+      my_version
+    ;;
+    -c | --copyright )
+      my_copyright
+    ;;
+    * )
+      my_help >&2
+      exit 1
+    ;;
+  esac
+
+  command -v sbotc      >/dev/null || mysbotc='sbot'
+  command -v "$mysbotc" >/dev/null || die "cannot find $mysbotc"
+  command -v jq         >/dev/null || die 'this command requires the ‘jq’ JSON processor'
+
+  myid=$("$mysbotc" whoami)
+
+  case "$?" in
+    0 ) : pass ;;
+    * ) exit 1 ;;
+  esac
+  test -z "$myid" && die 'empty reponse'
+
+  exec echo "$myid" | jq .id | tr -d '"'
+}
+
+main "${@}"
+
+# eof
