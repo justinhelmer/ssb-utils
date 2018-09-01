@@ -37,8 +37,8 @@ except (ImportError, NameError, Error):
 
 __author__ = 'Klaus Alexander Seistrup <klaus@seistrup.dk>'
 __whoami__ = 'ssb-block'
-__revision__ = '2018-04-27'
-__version__ = '0.0.2 ({})'.format(__revision__)
+__revision__ = '2018-09-01'
+__version__ = '0.0.3 ({})'.format(__revision__)
 __copyright__ = """\
 ssb-block {}
 Copyright © 2018 Klaus Alexander Seistrup <klaus@seistrup.dk>
@@ -108,7 +108,7 @@ def ssb_block(contact, comment=None, blocking=True):
         'user-agent': 'ssb-block/{}'.format(__version__)
     }
     if isinstance(comment, list):
-        data['comment'] = ' '.join(comment)
+        data['reason'] = ' '.join(comment)
 
     args = json.dumps(data, ensure_ascii=False, sort_keys=True)
     debug('json', args)
